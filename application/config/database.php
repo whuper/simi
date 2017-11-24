@@ -75,7 +75,8 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'sqlite:'.realpath('D:\nodejs\node-spider\nodespider.db'),
+	//'hostname' => 'sqlite:'.realpath('D:\nodejs\node-spider\nodespider.db'),
+	'hostname' => 'sqlite:'.realpath('C:\Users\Administrator\myhub\node-spider\nodespider.db'),
 	'username' => '',
 	'password' => '',
 	'database' => '',
