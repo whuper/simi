@@ -1,0 +1,129 @@
+body,div,hr,blockquote,ul,ol,li,table,th,td,dl,dt,dd,h1,h2,h3,h4,h5,h6,pre,form,input,button,p,select,textarea,fieldset,legend{margin:0;padding:0}
+body {
+background: #fff;
+}
+/*h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal}*/
+.clearfix{*zoom:1}
+.clearfix:after{display:block;clear:both;content:".";visibility:hidden;height:0}
+.clearboth{ clear:both;}
+ul,ol{list-style:none}
+fieldset,img{border:0}
+
+a:hover {
+color:red;
+}
+
+
+/*@media all and (min-width: 640px) {
+body {
+	width: 640px;
+	margin-left: auto;
+	margin-right: auto;
+}
+}
+
+@media all and (max-width: 320px) {
+body {
+	width: 320px;
+	margin-left: auto;
+	margin-right: auto;
+}
+}
+*/
+
+::selection { background-color: #E13300; color: white; }
+::-moz-selection { background-color: #E13300; color: white; }
+
+body {
+	background-color: #000;
+	margin: 40px;
+	font: 14px normal Helvetica, Arial, sans-serif;
+	color: #fff;
+}
+
+a {
+	color: #fff;
+	background-color: transparent;
+	font-weight: normal;
+	/*text-decoration: none;*/
+}
+
+h1 {
+	background-color: transparent;
+	border-bottom: 1px solid #D0D0D0;
+	font-size: 19px;
+	font-weight: normal;
+	margin: 0 0 14px 0;
+	padding: 14px 15px 10px 15px;
+}
+
+#container {
+	margin: 10px;
+	border: 1px solid #D0D0D0;
+	box-shadow: 0 0 8px #D0D0D0;
+}
+
+p {
+	margin: 12px 0;
+}
+
+.header {
+width:100%;
+padding-top:10px;
+}
+
+.center {
+margin:0 auto;
+}
+.mar {
+margin:10px auto;
+}
+.center_1000 {
+width:1000px;
+margin:0 auto;
+}
+.center_1000 .logo {
+position: absolute;
+
+top:50px;
+left:55px;
+
+}
+
+
+
+p.pagination {
+    padding: 20px;
+    
+}
+p.pagination a {
+    border: 1px solid #ddd;
+    line-height: 25px;
+    margin: 0 5px;
+    padding: 4px 8px;
+}
+p.pagination strong {
+margin:0 10px;
+}
+p.pagination a:hover {
+    background-color: #ccc;
+    color: #333;
+}
+
+ul.list {
+
+}
+ul.list li {
+padding:10px;
+/*border-bottom:1px solid #ccc; */
+}
+
+.infowrapper {
+padding:10px;
+}
+.infowrapper dt,.infowrapper dd {
+	line-height:25px;
+}
+.infowrapper dt a,.infowrapper dd a {
+font-style:italic;
+}

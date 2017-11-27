@@ -6,16 +6,19 @@ class News_model extends CI_Model {
         $this->load->database();
 	}
 
-	public function get_news($id = FALSE)
+	public function get_news($curpage = 1,$pagesize)
 	{
-    if ($id === FALSE)
-    {
+		$start = ($curpage - 1) * $pagesize;
+   
         //$query = $this->db->get('tokyohot');
-		$query = $this->db->query ('select * from tokyohot limit 0,10');
+		$query = $this->db->query ("select * from tokyohot limit $start,$pagesize");
+		//print_r("select * from tokyohot limit $start,$pagesize");
         return $query->result_array();
-    }
-
-    $query = $this->db->get_where('tokyohot', array('id' => $id));
-    return $query->row_array();
+   
+	}
+	public function get_news_detail($id = FALSE)
+	{
+		$query = $this->db->get_where('tokyohot', array('id' => $id));
+		return $query->row_array();
 	}
 }
