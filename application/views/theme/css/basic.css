@@ -35,14 +35,13 @@ body {
 ::-moz-selection { background-color: #E13300; color: white; }
 
 body {
-	background-color: #000;
 	margin: 40px;
 	font: 14px normal Helvetica, Arial, sans-serif;
-	color: #fff;
+	color: #555;
 }
 
 a {
-	color: #fff;
+	color: #555;
 	background-color: transparent;
 	font-weight: normal;
 	/*text-decoration: none;*/
