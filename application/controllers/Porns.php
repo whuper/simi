@@ -16,6 +16,7 @@ class Porns extends CI_Controller {
 		$data['items'] = $this->news_model->get_news($curpage,$config['per_page']);
 		$data['title'] = 'Tokyo-hot page '.$curpage;
 
+
 		$this->load->view('templates/header', $data);
 		$this->load->view('porns/index', $data);
 		$this->load->view('templates/footer');

@@ -73,9 +73,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $active_group = 'default';
 $query_builder = TRUE;
 
+if( strtoupper(substr(PHP_OS,0,3)) === 'WIN' ){
+  $dbpath = 'D:\nodejs\node-spider\nodespider.db';
+} else {
+  $dbpath = FCPATH.'resources/data.db';
+}
+
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'sqlite:'.realpath('D:\nodejs\node-spider\nodespider.db'),
+	'hostname' => 'sqlite:'.realpath($dbpath),
 	//'hostname' => 'sqlite:'.realpath('C:\Users\Administrator\myhub\node-spider\nodespider.db'),
 	'username' => '',
 	'password' => '',
