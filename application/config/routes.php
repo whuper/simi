@@ -63,6 +63,8 @@ $route['porns/(:num)'] = 'porns/index/$1';
 $route['report'] = 'report';
 $route['report/(:any)'] = 'report/index';
 
+$route['user'] = 'user';
+
 //$route['(:any)'] = 'pages/view/$1';
 //$route['default_controller'] = 'pages/view';
 $route['(:any)'] = 'welcome';

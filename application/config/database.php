@@ -73,11 +73,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $active_group = 'default';
 $query_builder = TRUE;
 
-if( strtoupper(substr(PHP_OS,0,3)) === 'WIN' ){
+/*if( strtoupper(substr(PHP_OS,0,3)) === 'WIN' ){
   $dbpath = 'D:\nodejs\node-spider\nodespider.db';
 } else {
   $dbpath = FCPATH.'resources/data.db';
-}
+}*/
+$dbpath = FCPATH.'resources/data.db';
 
 $db['default'] = array(
 	'dsn'	=> '',
