@@ -109,11 +109,7 @@ class User extends CI_Controller {
           
                 $post = $this->input->post();  
                 $clean = $this->security->xss_clean($post);
-								//print_r($_POST);
-
-								//验证规则
-								// 1 用户名
-								// 2 密码
+								
                 $userInfo = $this->user_model->checkLogin($clean,false);
                 
                 if(!$userInfo){
@@ -125,13 +121,25 @@ class User extends CI_Controller {
                 /*foreach($userInfo as $key=>$val){
                     $this->session->set_userdata($key, $val);
                 }*/
-								header("Content-Type:text/html;charset=UTF-8");
-								header("Cache-Control:no-cache");
-								echo json_encode($userInfo,JSON_UNESCAPED_UNICODE);
+						
+								print_i($userInfo);
                 //redirect(site_url().'main/');
             
         }
-        
+				public function get_users($curpage = 1,$pagesize = 10)
+				{
+					$start = ($curpage - 1) * $pagesize;
+					$query = $this->db->query ("select * from users limit $start,$pagesize");
+					
+							return $query->result_array();
+				 
+				}
+				public function get_user_detail($id = FALSE)
+				{
+					$query = $this->db->get_where('users', array('id' => $id));
+					return $query->row_array();
+				}
+							
         public function logout()
         {
             $this->session->sess_destroy();

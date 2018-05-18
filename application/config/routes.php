@@ -61,7 +61,6 @@ $route['porns'] = 'porns';
 $route['porns/(:num)'] = 'porns/index/$1';
 
 $route['report'] = 'report';
-$route['report/(:any)'] = 'report/index';
 
 $route['user'] = 'user';
 

@@ -82,13 +82,12 @@ $dbpath = FCPATH.'resources/data.db';
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'sqlite:'.realpath($dbpath),
+	'hostname' => '127.0.0.1',
 	//'hostname' => 'sqlite:'.realpath('C:\Users\Administrator\myhub\node-spider\nodespider.db'),
-	'username' => '',
-	'password' => '',
-	'database' => '',
-	//'dbdriver' => 'mysqli',
-	'dbdriver' => 'pdo',
+	'username' => 'root',
+	'password' => '888990',
+	'database' => 'report_new',
+	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
 	'db_debug' => (ENVIRONMENT !== 'production'),
