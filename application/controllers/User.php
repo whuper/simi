@@ -31,26 +31,14 @@ class User extends CI_Controller {
         public function register()
         {
              
-                if($this->user_model->isDuplicate($this->input->post('email'))){
-                    $this->session->set_flashdata('flash_message', 'User email already exists');
-                    redirect(site_url().'main/login');
+                if($this->user_model->isDuplicate($this->input->post('userId'))){
+                   
+                    print_i(array("msg"=>"此用户已经存在"));	
                 }else{
-                    
                     $clean = $this->security->xss_clean($this->input->post(NULL, TRUE));
-                    $id = $this->user_model->insertUser($clean); 
-                    $token = $this->user_model->insertToken($id);                                        
+										$id = $this->user_model->insertUser($clean);
+									 	print_i(array('ok'=>true,'id'=>$id));	
                     
-                    $qstring = $this->base64url_encode($token);                    
-                    $url = site_url() . 'main/complete/token/' . $qstring;
-                    $link = '<a href="' . $url . '">' . $url . '</a>'; 
-                               
-                    $message = '';                     
-                    $message .= '<strong>You have signed up with our website</strong><br>';
-                    $message .= '<strong>Please click:</strong> ' . $link;                          
-
-                    echo $message; //send this in email
-                    exit;
-                     
                     
                 };              
         }
@@ -62,46 +50,19 @@ class User extends CI_Controller {
         
         public function complete()
         {                                   
-            $token = base64_decode($this->uri->segment(4));       
-            $cleanToken = $this->security->xss_clean($token);
-            
-            $user_info = $this->user_model->isTokenValid($cleanToken); //either false or array();           
-            
-            if(!$user_info){
-                $this->session->set_flashdata('flash_message', 'Token is invalid or expired');
-                redirect(site_url().'main/login');
-            }            
-            $data = array(
-                'firstName'=> $user_info->first_name, 
-                'email'=>$user_info->email, 
-                'user_id'=>$user_info->id, 
-                'token'=>$this->base64url_encode($token)
-            );
-           
-         
-                $this->load->library('password');                 
+                    
                 $post = $this->input->post(NULL, TRUE);
                 
                 $cleanPost = $this->security->xss_clean($post);
                 
-                $hashed = $this->password->create_hash($cleanPost['password']);                
-                $cleanPost['password'] = $hashed;
-                unset($cleanPost['passconf']);
+              
                 $userInfo = $this->user_model->updateUserInfo($cleanPost);
                 
                 if(!$userInfo){
-                    $this->session->set_flashdata('flash_message', 'There was a problem updating your record');
-                    redirect(site_url().'main/login');
+                   print_i(array('ok'=>false,'msg'=>'更新失败'));
                 }
-                
-                unset($userInfo->password);
-                
-                foreach($userInfo as $key=>$val){
-                    $this->session->set_userdata($key, $val);
-                }
-                redirect(site_url().'main/');
-                
-            
+								print_i(array('ok'=>true,'userInfo'=>$userInfo));
+                          
         }
         
         public function login()
@@ -114,8 +75,7 @@ class User extends CI_Controller {
                 
                 if(!$userInfo){
                     //$this->session->set_flashdata('flash_message', 'The login was unsucessful');
-										echo 'err';
-										return;
+									print_i(array('ok'=>false,'msg'=>'密码错误'));
                     //redirect(site_url().'main/login');
                 }                
                 /*foreach($userInfo as $key=>$val){
@@ -126,19 +86,77 @@ class User extends CI_Controller {
                 //redirect(site_url().'main/');
             
         }
-				public function get_users($curpage = 1,$pagesize = 10)
+				public function get_users($curpage = 1,$pagesize = 20)
 				{
+					$get = $this->input->get();  
+					$clean = $this->security->xss_clean($get);
+
+					$curpage = isset($clean['curpage'])? $clean['curpage'] : $curpage ;
+					$pagesize = isset($clean['pagesize'])? $clean['pagesize'] : $pagesize ;
+
 					$start = ($curpage - 1) * $pagesize;
-					$query = $this->db->query ("select * from users limit $start,$pagesize");
+					$query = $this->db->query("select * from users limit $start,$pagesize");
 					
-							return $query->result_array();
+					$list =  $query->result_array();
+
+					print_i($list);
 				 
 				}
+
+				public function del()
+				{
+						$get = $this->input->get();  
+						$clean = $this->security->xss_clean($get);
+						if(isset($clean['delId'])){
+							$id = $clean['delId'];
+							$query = $this->db->query ("delete from users where id = $id ");
+							if($query){
+									print_i(array('ok'=>true,'msg'=>$query));
+							} else {
+									print_i(array('ok'=>false));
+							}
+						}
+				}
+
 				public function get_user_detail($id = FALSE)
 				{
 					$query = $this->db->get_where('users', array('id' => $id));
 					return $query->row_array();
 				}
+				public function get_basic_data()
+				{
+					//$query = $this->db->get_where('users', array('id' => $id));
+					//$this->db->query();
+					//$list = $query->row_array();
+
+					$this->db->distinct();
+					
+
+					$this->db->select('team');
+					$this->db->where('team !=',null);  
+					$this->db->where('team !=','');  
+					$query = $this->db->get('users');
+			
+					$teams = [];
+					foreach ($query->result_array() as $row) {
+						$teams[] = $row['team'];
+					}
+
+					$this->db->distinct();
+					$this->db->select('department');
+					$this->db->where('department !=',null);  
+					$this->db->where('department !=','');  
+					$query = $this->db->get('users');
+			
+					$departments = [];
+					foreach ($query->result_array() as $row) {
+						$departments[] = $row['department'];
+					}
+				
+					print_i(array('ok'=>true,'teams'=>$teams,'departments'=>$departments));
+
+				}
+				
 							
         public function logout()
         {
@@ -190,45 +208,24 @@ class User extends CI_Controller {
         
         public function reset_password()
         {
-            $token = $this->base64url_decode($this->uri->segment(4));                  
-            $cleanToken = $this->security->xss_clean($token);
-            
-            $user_info = $this->user_model->isTokenValid($cleanToken); //either false or array();               
-            
-            if(!$user_info){
-                $this->session->set_flashdata('flash_message', 'Token is invalid or expired');
-                redirect(site_url().'main/login');
-            }            
-            $data = array(
-                'firstName'=> $user_info->first_name, 
-                'email'=>$user_info->email, 
-//                'user_id'=>$user_info->id, 
-                'token'=>$this->base64url_encode($token)
-            );
-           
-            $this->form_validation->set_rules('password', 'Password', 'required|min_length[5]');
-            $this->form_validation->set_rules('passconf', 'Password Confirmation', 'required|matches[password]');              
-            
-            if ($this->form_validation->run() == FALSE) {   
-                $this->load->view('header');
-                $this->load->view('reset_password', $data);
-                $this->load->view('footer');
-            }else{
-                                
-                $this->load->library('password');                 
                 $post = $this->input->post(NULL, TRUE);                
-                $cleanPost = $this->security->xss_clean($post);                
-                $hashed = $this->password->create_hash($cleanPost['password']);                
-                $cleanPost['password'] = $hashed;
-                $cleanPost['user_id'] = $user_info->id;
-                unset($cleanPost['passconf']);                
+								$cleanPost = $this->security->xss_clean($post); 
+
+								$user_p = array('userId'=>$cleanPost['userId'],'password'=>$cleanPost['password']);
+
+								$userInfo = $this->user_model->checkLogin($user_p,false);
+                
+                if(!$userInfo){
+									print_i(array('ok'=>false,'msg'=>'旧密码错误'));
+                }              
+																
                 if(!$this->user_model->updatePassword($cleanPost)){
-                    $this->session->set_flashdata('flash_message', 'There was a problem updating your password');
+                    print_i(array('ok'=>false,'msg'=>'密码修改失败'));
                 }else{
-                    $this->session->set_flashdata('flash_message', 'Your password has been updated. You may now login');
+                    print_i(array('ok'=>true,'msg'=>'密码修改成功'));
                 }
-                redirect(site_url().'main/login');                
-            }
+                    
+           
         }
         
     public function base64url_encode($data) { 

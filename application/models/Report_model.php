@@ -32,6 +32,14 @@ class Report_model extends CI_Model {
 		return $res;
 	
 	}
+	public function	update_schedules($post){
+
+		$sql = "update reports(userId,username,createTime,plans,tasks,extraTasks,weekNumber) VALUES(?,?,?,?,?,?,?)";
+
+		$res = $this->db->query($sql, array($post['userId'],$post['userName'],$createTime,$post['plans'],$post['tasks'],$post['extraTasks'],$post['weekNumber']) );
+		return $res;
+	
+	}
 
 	public function get_users($curpage = 1,$pagesize = 10)
 	{

@@ -23,9 +23,27 @@ class Report extends CI_Controller {
 		{
 			$post = $this->input->post();  
 			$clean = $this->security->xss_clean($post);
-			$data['list'] = $this->report_model->get_schedules($clean['userId'],$clean['weekNumber']);
 
-			print_i($data['list']);
+			//本周的
+			$data = $this->report_model->get_schedules($clean['userId'],$clean['weekNumber']);
+
+			if(sizeof($data) > 0){
+					print_i(array('thisWeek'=>$data));
+			} else {
+					//获取上周的
+				$weekNumber = intval($clean['weekNumber']) - 1;
+				$data = $this->report_model->get_schedules($clean['userId'],$weekNumber);
+
+				if(sizeof($data) > 0){
+					print_i(array('prevWeek'=>$data));				
+				} else {
+					print_i(array('ok'=>true));
+				}		
+			}
+
+	
+
+			
 
 		}
 		public function	postSchedules()
@@ -48,6 +66,19 @@ class Report extends CI_Controller {
 				print_i(array("msg"=>"fail"));			
 			}
 	
+		}
+		public function updateSchedules(){
+
+			$res = $this->report_model->update_schedules($clean);
+			
+			if($res){
+				print_i(array("msg"=>"ok"));
+			
+			} else {
+				print_i(array("msg"=>"fail"));			
+			}
+	
+		
 		}
 
     public function view($id = NULL)

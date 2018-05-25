@@ -14,20 +14,22 @@ class User_model extends CI_Model {
     public function insertUser($d)
     {  
             $string = array(
-                'first_name'=>$d['firstname'],
-                'last_name'=>$d['lastname'],
-                'email'=>$d['email'],
-                'role'=>$this->roles[0], 
-                'status'=>$this->status[0]
+                'userId'=>$d['userId'],
+                'userName'=>$d['userName'],
+                'team'=>$d['team'],
+                'gender'=>$d['gender'],
+                'role'=>'1', 
+                'password'=>md5('123456'), 
+                'status'=>'1'
             );
             $q = $this->db->insert_string('users',$string);             
             $this->db->query($q);
             return $this->db->insert_id();
     }
     
-    public function isDuplicate($email)
+    public function isDuplicate($userId)
     {     
-        $this->db->get_where('users', array('email' => $email), 1);
+        $this->db->get_where('users', array('userId' => $userId), 1);
         return $this->db->affected_rows() > 0 ? TRUE : FALSE;         
     }
     
@@ -92,20 +94,31 @@ class User_model extends CI_Model {
     public function updateUserInfo($post)
     {
         $data = array(
-               'password' => $post['password'],
-               'last_login' => date('Y-m-d h:i:s A'), 
-               'status' => $this->status[1]
+               'userId' => $post['userId'],
+               'userName' => $post['userName'],
+               'team' => $post['team'],
+               'gender' => $post['gender'],
+               'email' => $post['email'],
+               'phone' => $post['phone'],
+               'department' => $post['department'],
+               'status' => $post['status'],
             );
-        $this->db->where('id', $post['user_id']);
+				if(isset($post['resetPwd'])){
+						$data['password'] = md5(123456);
+				}
+				if(!isset($post['id'])){
+						return false;				
+				}
+        $this->db->where('id', $post['id']);
         $this->db->update('users', $data); 
         $success = $this->db->affected_rows(); 
         
         if(!$success){
-            error_log('Unable to updateUserInfo('.$post['user_id'].')');
+            error_log('Unable to updateUserInfo('.$post['id'].')');
             return false;
         }
         
-        $user_info = $this->getUserInfo($post['user_id']); 
+        $user_info = $this->getUserInfo($post['id']); 
         return $user_info; 
     }
     
@@ -113,10 +126,10 @@ class User_model extends CI_Model {
     {
 				//$this->db->where('email', $post['email']);
 				if(!$md5){
-						$post['passWord'] = md5($post['passWord']);
+						$post['password'] = md5($post['password']);
 				}
 
-				$query = $this->db->get_where('users', array('userid' => $post['userId'],'password' => $post['passWord']));
+				$query = $this->db->get_where('users', array('userId' => $post['userId'],'password' => $post['password']));
 				return $query->row_array();
        
     }
@@ -142,12 +155,15 @@ class User_model extends CI_Model {
     
     public function updatePassword($post)
     {   
-        $this->db->where('id', $post['user_id']);
-        $this->db->update('users', array('password' => $post['password'])); 
+				if(!isset($post['id'])){
+						 return false;
+				}
+        $this->db->where('id', $post['id']);
+        $this->db->update('users', array( 'password' => md5($post['newPassword']) )); 
         $success = $this->db->affected_rows(); 
         
         if(!$success){
-            error_log('Unable to updatePassword('.$post['user_id'].')');
+            error_log('Unable to updatePassword('.$post['userId'].')');
             return false;
         }        
         return true;
